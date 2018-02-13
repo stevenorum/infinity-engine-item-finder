@@ -369,6 +369,8 @@ def main():
             for a in item_attrs:
                 print("{} : {}".format(a, hexlify(item_attrs[a])))
     dumpf(items, "all_iwdee_items.json")
-
+    item_code_map = {i["item_code"]:i for i in items}
+    dumpf(item_code_map, "all_iwdee_items_by_id.json")    
+    
 if __name__ == "__main__":
     main()
