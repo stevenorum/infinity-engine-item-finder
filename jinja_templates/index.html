@@ -41,7 +41,7 @@
         <td><a href="{{ item["item_code"] }}.html" target="_blank">{{ item["identified_name"] }}</a></td>
         <td>{{ item["item_type"] }}</td>
         <td>{{ item["weapon_proficiency"] if item["weapon_proficiency"] else "N/A" }}</td>
-        <td>{{ "yes" if item["movable"] else "NO" }}</td>
+        <td>{{ "yes" if item["flags"]["movable"] else "NO" }}</td>
       </tr>
       {% endfor %}
       {% for item in items if not item["flags"]["movable"] %}
@@ -50,7 +50,7 @@
         <td><a href="{{ item["item_code"] }}.html" target="_blank">{{ item["identified_name"] }}</a></td>
         <td>{{ item["item_type"] }}</td>
         <td>{{ item["weapon_proficiency"] if item["weapon_proficiency"] else "N/A" }}</td>
-        <td>{{ "yes" if item["movable"] else "NO" }}</td>
+        <td>{{ "yes" if item["flags"]["movable"] else "NO" }}</td>
       </tr>
       {% endfor %}
     </table>
