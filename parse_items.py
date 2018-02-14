@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import binascii
+from jinja2 import Environment, FileSystemLoader
 import json
 import os
 import sys
 import traceback
+
+env = Environment(loader=FileSystemLoader("jinja_templates/"))
 
 from ietools.shared import *
 
@@ -134,10 +137,10 @@ HEADER_USABILITY_FLAGS = [
 ]
 
 HEADER_KIT_USABILITY_FLAGS = [
-    ["Cleric of Talos","Cleric of Helm","Cleric of Lathlander","Totemic Druid","Shapeshifter Druid","Avenger Druid","Barbarian","Wild Mage"],
-    ["Stalker Ranger","Beastmaster Ranger","Assassin Thief","Bounty Hunter Thief","Swashbuckler Thief","Blade Bard","Jester Bard","Skald Bard"],
-    ["Diviner","Enchanter","Illusionist","Invoker","Necromancer","Transmuter","All","Ferlain"],
-    ["Berserker Fighter","Wizard Slayer Fighter","Kensai Fighter","Cavalier Paladin","Inquisitor Paladin","Undead Hunter Paladin","Abjurer","Conjurer"],
+    ["Priest of Talos (Cleric kit)","Priest of Helm (Cleric kit)","Priest of Lathlander (Cleric kit)","Totemic Druid (Druid kit)","Shapeshifter (Druid kit)","Avenger (Druid kit)","Barbarian","Wild Mage (Mage kit)"],
+    ["Stalker (Ranger kit)","Beastmaster (Ranger kit)","Assassin (Thief kit)","Bounty Hunter (Thief kit)","Swashbuckler (Thief kit)","Blade (Bard kit)","Jester (Bard kit)","Skald (Bard kit)"],
+    ["Diviner (Specialist Mage)","Enchanter (Specialist Mage)","Illusionist (Specialist Mage)","Invoker (Specialist Mage)","Necromancer (Specialist Mage)","Transmuter (Specialist Mage)","All","Ferlain (?)"],
+    ["Berserker (Fighter kit)","Wizard Slayer (Fighter kit)","Kensai (Fighter kit)","Cavalier (Paladin kit)","Inquisitor (Paladin kit)","Undead Hunter (Paladin kit)","Abjurer (Specialist Mage)","Conjurer (Specialist Mage)"],
 ]
 
 EXTENDED_HEADER_FLAGS = [
@@ -199,10 +202,14 @@ def _parse_item_file(f, **kwargs):
     attributes["lore_to_id"] = word_to_int(f.read(2))
     attributes["ground_icon"] = clean_string(f.read(8))
     attributes["weight"] = word_to_int(f.read(4))
-    attributes["unidentified_desc"] = word_to_int(f.read(4))
-    attributes["identified_desc"] = word_to_int(f.read(4))
-    attributes["unidentified_desc"] = _TLK.get(str(attributes["unidentified_desc"]), str(attributes["unidentified_desc"]))
-    attributes["identified_desc"] = _TLK.get(str(attributes["identified_desc"]), str(attributes["identified_desc"]))
+    attributes["unidentified_desc_ind"] = word_to_int(f.read(4))
+    attributes["identified_desc_ind"] = word_to_int(f.read(4))
+
+    attributes["unidentified_desc"] = _TLK.get(str(attributes["unidentified_desc_ind"]))
+    attributes["identified_desc"] = _TLK.get(str(attributes["identified_desc_ind"]))
+    # If an item doesn't need to be identified, the "identified_description" pointer is frequently (always?) null.
+    # attributes["unidentified_desc"] = attributes["unidentified_desc"] if attributes["unidentified_desc"] else attributes["identified_desc"]
+    # attributes["identified_desc"] = attributes["identified_desc"] if attributes["identified_desc"] else attributes["unidentified_desc"]
     # attributes["desc_icon"] = clean_string(f.read(8))
     attributes["desc_icon"] = f.read(8)
     attributes["enchantment"] = f.read(4)
@@ -370,7 +377,16 @@ def main():
                 print("{} : {}".format(a, hexlify(item_attrs[a])))
     dumpf(items, "all_iwdee_items.json")
     item_code_map = {i["item_code"]:i for i in items}
-    dumpf(item_code_map, "all_iwdee_items_by_id.json")    
-    
+    dumpf(item_code_map, "all_iwdee_items_by_id.json")
+    index_contents = env.get_template("index.html").render(items=items)
+    with open("html_files/index.html","w") as f:
+        f.write(index_contents)
+    for item in items:
+        file_contents = env.get_template("item.html").render(**item)
+        fname = "html_files/{item_code}.html".format(**item)
+        with open(fname,"w") as f:
+            f.write(file_contents)
+
+
 if __name__ == "__main__":
     main()

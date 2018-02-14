@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+      }
+
+      td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+      }
+
+      tr:nth-child(even) {
+      background-color: #dddddd;
+      }
+      pre{
+      white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+
+    <table>
+      <tr>
+        <th>ITEM CODE</th>
+        <th>NAME</th>
+      </tr>
+      {% for item in items %}
+      <tr>
+        <td>{{ item["item_code"] }}</td>
+        <td><a href="{{ item["item_code"] }}.html" target="_blank">{{ item["identified_name"] }}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
