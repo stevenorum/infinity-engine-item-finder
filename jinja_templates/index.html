@@ -23,18 +23,34 @@
     </style>
   </head>
   <body>
-
+    <h2>Movable items</h2>
+    <p>These are the items that have the "movable" flag set to true, which generally indicates that they can be safely added to your inventory with CLUAConsole and used.</p>
     <table>
       <tr>
         <th>ITEM CODE</th>
         <th>NAME</th>
       </tr>
-      {% for item in items %}
+      {% for item in items if item["flags"]["movable"] %}
       <tr>
         <td>{{ item["item_code"] }}</td>
         <td><a href="{{ item["item_code"] }}.html" target="_blank">{{ item["identified_name"] }}</a></td>
       </tr>
       {% endfor %}
     </table>
+    <h2>Immovable items</h2>
+    <p>These are the items that have the "movable" flag set to false.  If you use CLUAConsole to add these to your inventory, they'll be stuck there forever.  These could be special items that a character is stuck with, creature abilities or attacks that are implemented on the backend as items, item-like effects of offensive spells, or just discarded stuff that was never added to the game but was also never fully removed.</p>
+    <table>
+      <tr>
+        <th>ITEM CODE</th>
+        <th>NAME</th>
+      </tr>
+      {% for item in items if not item["flags"]["movable"] %}
+      <tr>
+        <td>{{ item["item_code"] }}</td>
+        <td><a href="{{ item["item_code"] }}.html" target="_blank">{{ item["identified_name"] }}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+
   </body>
 </html>
