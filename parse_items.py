@@ -90,7 +90,7 @@ HEADER_ITEM_TYPES = [
     "Gauntlet", # 0x0049
 ]
 
-HEADER_PROFICIENCY_LIST = ["None"] + [None] * 88
+HEADER_PROFICIENCY_LIST = [None] + ["<unexpected value in file>"] * 88
 HEADER_PROFICIENCY_LIST += [
     "Bastard Sword", # 0x59
     "Long Sword", # 0x5a
